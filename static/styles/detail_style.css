@@ -95,6 +95,7 @@ div.stat-float {
     float: right;
     padding-right: 10px;
     color: #ccc;
+    line-height: 50px;
 }
 
 .stat-progress {

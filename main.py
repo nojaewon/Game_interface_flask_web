@@ -99,14 +99,77 @@ def detail_page(character_id):
     if personal_info_cash['acc_id'] is None:
         return redirect('/login')
     
-    query = (f"""
-            SELECT 
+    ch_acc = personal_info_cash['acc_id']
+    ch_name = personal_info_cash['character_list'][character_id]['name']
+    ch_level = personal_info_cash['character_list'][character_id]['level']
+    ch_job = personal_info_cash['character_list'][character_id]['level']
+    
+    ch_str = 5
+    ch_dec = 5
+    ch_dec = 5
+    ch_int = 5
+    ch_luk = 5
+    ch_hp = 100
+    ch_mp = 100
 
+    ch_skill_list = []
+    ch_item_list = []
+
+    query = (f"""
+            select skill, skilllevel from CHARACTERSKILL
+            where character_id = '{ch_name}';
         """)
     cursor.execute(query)
 
+    for data in cursor:
+        ch_skill_list.append({
+            'skill_title': data[0],
+            'skill_level': data[1]
+        })
+    
+    query = (f"""
+            select item.item_name, item_type
+            from INVENTORY join ITEM
+            on inventory.item_name = item.item_name and character_id='{ch_name}';
+        """)
+    cursor.execute(query)
 
-    return render_template("detail_page.html")
+    for data in cursor:
+        ch_item_list.append({
+            'item_name': data[0],
+            'item_type': data[1]
+        })
+    
+    query = (f"""
+            select * from stat
+            where character_id = '{ch_name}';
+        """)
+    cursor.execute(query)
+
+    for data in cursor:
+        ch_level = data[1]
+        ch_str = data[2]
+        ch_dec = data[3]
+        ch_int = data[4]
+        ch_luk = data[5]
+        ch_hp = data[6]
+        ch_mp = data[7]
+
+    return render_template("detail_page.html", template = {
+        '_idx' : character_id,
+        '_acc' : ch_acc,
+        '_name' : ch_name,
+        '_level' : ch_level,
+        '_job' : ch_job,
+        '_str' : ch_str,
+        '_dec' : ch_dec,
+        '_int' : ch_int,
+        '_luk' : ch_luk,
+        '_hp' : ch_hp,
+        '_mp' : ch_mp,
+        '_item_list' : ch_item_list,
+        '_skill_list' : ch_skill_list
+    })
 
 
 if __name__ == "__main__":

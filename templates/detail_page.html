@@ -13,123 +13,71 @@
     </div>
     <div class="inventory-container">
         <ul class="inventory-list">
+        {% for item in template['_item_list'] %}
             <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
+                <span class="item-name">{{item['item_name']}}</span>
+                <span class="item-type">{{item['item_type']}}</span>
             </li>
-
-            <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
-            </li>
-
-            <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
-            </li>
-
-            <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
-            </li>
-
-            <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
-            </li>
-
-            <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
-            </li>
-
-            <li class="inventory-list-item">
-                <span class="item-name">SHIRT</span>
-                <span class="item-type">ARMOR</span>
-            </li>
+        {% endfor %}
         </ul>
     </div>
     <div class="skill-container">
         <h4 style="text-align: center; margin: 5px 0; color: #ccc;">SKILL MANAGEMENT LIST</h4>
         <ul class="skill-list">
-            
-            <li class="skill-card">
-                <p class="skill-name">SKILL_NAME</p>
-                <p class="skill-level">SKILL_LEVEL</p>
-            </li>
-
-            <li class="skill-card">
-                <p class="skill-name">SKILL_NAME</p>
-                <p class="skill-level">SKILL_LEVEL</p>
-            </li>
-
-            <li class="skill-card">
-                <p class="skill-name">SKILL_NAME</p>
-                <p class="skill-level">SKILL_LEVEL</p>
-            </li>
-
-            <li class="skill-card">
-                <p class="skill-name">SKILL_NAME</p>
-                <p class="skill-level">SKILL_LEVEL</p>
-            </li>
-
-            <li class="skill-card">
-                <p class="skill-name">SKILL_NAME</p>
-                <p class="skill-level">SKILL_LEVEL</p>
-            </li>
-
-            <li class="skill-card">
-                <p class="skill-name">SKILL_NAME</p>
-                <p class="skill-level">SKILL_LEVEL</p>
-            </li>
+            {% for skill in template['_skill_list'] %}
+                <li class="skill-card">
+                    <p class="skill-name">{{skill['skill_title']}}</p>
+                    <p class="skill-level">{{skill['skill_level']}}LV</p>
+                </li>
+            {% endfor %}
         </ul>
     </div>
     <div class="stat-container">
-        <img class="stat-float stat-img" src="../static/images/character2.png" alt="">
+        <img class="stat-float stat-img" src="../static/images/character{{ template['_idx'] + 1}}.png" alt="">
         <div class="stat-float w150">
-            <span class="stat-title">ACC: </span>
+            <span class="stat-title">ACC: {{template['_acc']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">NAME: </span>
+            <span class="stat-title">NAME: {{template['_name']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">JOB: </span>
+            <span class="stat-title">JOB: {{template['_job']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">LV: </span>
+            <span class="stat-title">LV: {{template['_level']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">STR: </span>
+            <span class="stat-title">STR: {{template['_str']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">DEX: </span>
+            <span class="stat-title">DEC: {{template['_dec']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">INT: </span>
+            <span class="stat-title">INT: {{template['_int']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w150">
-            <span class="stat-title">LUK: </span>
+            <span class="stat-title">LUK: {{template['_luk']}}</span>
             <span class="stat-value"></span>
         </div>
         <div class="stat-float w300">
             <span class="stat-title">HP </span>
             <span class="stat-progress">
-                <progress max="10" value="7"></progress>
+                <progress max="{{template['_hp']}}" value="{{template['_hp']}}"></progress>
             </span>
-            <span class="stat-value"></span>
+            <span class="stat-value">{{template['_hp']}}</span>
         </div>
         <div class="stat-float w300">
             <span class="stat-title">MP</span>
             <span class="stat-progress">
-                <progress max="10" value="6"></progress>
-                <span class="stat-value"></span>
+                <progress max="{{template['_mp']}}" value="{{template['_mp']}}"></progress>
+                <span class="stat-value">{{template['_mp']}}</span>
             </span>
         </div>
     </div>
