@@ -1,0 +1,32 @@
+{% extends "base_page.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="../static/styles/pick_style.css">
+{% endblock %}
+
+
+{% block contents %}
+<div class="pick-character-container">
+    {% for character_info in character_info_list %}
+       
+        <div class="character-container">
+        {% if character_info != None %}
+            <p class="character">
+                <img class="character_img" src= "../static/images/character{{ loop.index }}.png" alt="character-img">
+            </p>
+            <p class="character-text character_name">Name: {{character_info['name']}}</p>
+            <p class="character-text character_job">Job: {{character_info['job']}}</p>
+            <p class="character-text character_lv">LV: {{character_info['level']}}</p>
+        {% else %}
+            
+        
+        {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="../static/js/pick_acition.js"></script>
+{% endblock %}

@@ -1,0 +1,39 @@
+.pick-character-container {
+    position: absolute;
+	top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+	width:1000px; height:300px;
+    display: flex;
+    
+}
+
+.character-container{
+    width: 24%; height: 100%;
+    margin-left: 1%;
+	cursor: pointer;
+	background-color: rgba(0,0,0,0.3);
+	box-shadow: #000 1px 1px 7px;
+}
+
+.character-container:hover {
+	box-shadow: #000 1px 1px 15px;
+}
+
+.character {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.character_img {
+	width: 100%; height: 150px;
+}
+
+.character-text {
+	color: #ccc;
+	text-align: center;
+	line-height: 20px;
+}
+
+.character_name {}
+.character_job {}
+.character_lv {}
