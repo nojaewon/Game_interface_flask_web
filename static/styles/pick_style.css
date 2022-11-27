@@ -7,12 +7,50 @@
     
 }
 
+.pick-character-container h2 {
+	position: absolute;
+	left: 50%; top: -75px;
+	color: #ccc;
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+	transform: translate(-50%, 0);
+}
+
 .character-container{
+	position: relative;
     width: 24%; height: 100%;
     margin-left: 1%;
 	cursor: pointer;
 	background-color: rgba(0,0,0,0.3);
 	box-shadow: #000 1px 1px 7px;
+}
+
+.character-container .character-add {
+	width: 100px; height: 100px;
+	position: relative;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.character-container .character-delete {
+	display: block;
+	position: absolute;
+	left: 10px; bottom: 10px;
+	text-decoration: none;
+	color: #ccc;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+.character-container .character-detail{
+	display: block;
+	position: absolute;
+	right: 10px; bottom: 10px;
+	text-decoration: none;
+	color: #ccc;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 5px;
 }
 
 .character-container:hover {
@@ -37,3 +75,37 @@
 .character_name {}
 .character_job {}
 .character_lv {}
+
+.query-delete {
+	width: 300px; height: 100px;
+	background-color: #eee;
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0,0,0,0.8);
+	color: #ccc;
+	border-radius: 20px;
+	display: none;
+}
+
+.query-delete-title {
+	text-align: center;
+	line-height: 75px;
+}
+
+.query-delete-response {
+	display: block;
+	text-decoration: none;
+	font-size: 13px;
+	position: absolute;
+	color: #ccc;
+	font-weight: bold;
+}
+
+.query-delete-yes {
+	bottom: 13px; right: 25px;
+}
+
+.query-delete-no {
+	bottom: 13px; right: 45px;
+}

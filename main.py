@@ -5,7 +5,7 @@ app = Flask(__name__)
 cnx = mysql.connector.connect(user='root', password='1234', host='127.0.0.1', database='maplestory') 
 cursor = cnx.cursor()
 
-personal_info_cash = {
+personal_info_cache = {
     'acc_id' : None,
     'name': "",
     'email' : "",
@@ -37,12 +37,12 @@ def login_page():
         cursor.execute(query)
 
         for data in cursor:
-            personal_info_cash['acc_id'] = data[0]
-            personal_info_cash['email'] = data[1]
-            personal_info_cash['name'] = data[2]
-            personal_info_cash['password'] = data[3]
+            personal_info_cache['acc_id'] = data[0]
+            personal_info_cache['email'] = data[1]
+            personal_info_cache['name'] = data[2]
+            personal_info_cache['password'] = data[3]
 
-        if personal_info_cash['acc_id'] is None:
+        if personal_info_cache['acc_id'] is None:
             print("NOT logged!")
             return render_template("login_page.html")    
         
@@ -51,6 +51,30 @@ def login_page():
     else:
         return render_template("login_page.html")
 
+
+# 회원가입 화면
+@app.route('/signup', methods=['POST', 'GET'])
+def sign_page():
+    if request.method == 'POST':
+        signup_name = request.form['NAME']
+        signup_id = request.form['ID']
+        signup_email = request.form['EMAIL']
+        signup_password = request.form['PASSWORD']
+
+        query = (f"""
+                INSERT INTO USERACCOUNT VALUES(
+                    '{signup_id}',
+                    '{signup_name}',
+                    '{signup_email}',
+                    '{signup_password}'
+                );
+                """)
+        cursor.execute(query)
+        cnx.commit()
+        print('sign up!')
+        return redirect('/login')
+    else:
+        return render_template('sign_page.html')
 
 # 캐릭터 픽창
 @app.route('/pick')
@@ -62,14 +86,14 @@ def pick_page():
 
     character_info_list = [None, None, None, None]
     
-    if personal_info_cash['acc_id'] is None:
+    if personal_info_cache['acc_id'] is None:
         return redirect("/login")
     
     query = (f"""
                 select stat.character_id, job, stat._level
                 from usercharacter
                 join stat on usercharacter.character_id = stat.character_id 
-                and usercharacter.acc_id = '{personal_info_cash['acc_id']}';
+                and usercharacter.acc_id = '{personal_info_cache['acc_id']}';
             """)
 
     cursor.execute(query)
@@ -80,14 +104,18 @@ def pick_page():
             'level' : data[2]
         }
 
-        personal_info_cash['character_list'][idx] = character
+        personal_info_cache['character_list'][idx] = character
 
-    return render_template("pick_page.html", character_info_list=personal_info_cash['character_list'])
+    return render_template("pick_page.html", character_info_list=personal_info_cache['character_list'], acc_name=personal_info_cache['acc_id'])
 
 
 # 캐릭터 세부 정보 조작
 @app.route('/pick/<int:character_id>')
 def detail_page(character_id):
+    # 캐릭터 리스트는 0부터 시작, character_id는 1부터 시작
+    # 따라서 리스트에서 받아오려면 1씩 빼주어야 한다.
+    # 만들다보니까 이렇게 레거시가 되었지만 그냥 수정하지 않음
+
     # 해당 계정의 해당 캐릭터에 대한 인벤토리, 스킬셋, stat 정보를 모두 불러옴.
     # 로그인이 되지 않았으면 로그인창으로 리다이렉트
     # 모든 정보를 템플릿 변수를 통해 보여줌
@@ -96,13 +124,13 @@ def detail_page(character_id):
     # 가져와야할 정보 2. 캐릭터의 스탯 from STAT
     # 가져와야할 정보 3. 캐릭터의 스킬셋 from CHACRACTERSKILL
 
-    if personal_info_cash['acc_id'] is None:
+    if personal_info_cache['acc_id'] is None:
         return redirect('/login')
     
-    ch_acc = personal_info_cash['acc_id']
-    ch_name = personal_info_cash['character_list'][character_id]['name']
-    ch_level = personal_info_cash['character_list'][character_id]['level']
-    ch_job = personal_info_cash['character_list'][character_id]['level']
+    ch_acc = personal_info_cache['acc_id']
+    ch_name = personal_info_cache['character_list'][character_id-1]['name']
+    ch_level = personal_info_cache['character_list'][character_id-1]['level']
+    ch_job = personal_info_cache['character_list'][character_id-1]['level']
     
     ch_str = 5
     ch_dec = 5
@@ -170,6 +198,44 @@ def detail_page(character_id):
         '_item_list' : ch_item_list,
         '_skill_list' : ch_skill_list
     })
+
+# 캐릭터 생성
+@app.route('/create-character', methods=['POST', 'GET'])
+def create_page():
+    # 로그인이 안되어 있으면 로그인창으로 리다이렉트
+    # GET 요청일 때 해당 캐릭터 개수가 4개 이상이면 캐릭터 생성 x, pick 창으로 리다이렉트
+    # GET으로 받을 시 캐릭터 생성을 위한 입력폼으로 이동
+    # POST method이면 request 입력폼의 정보들로 DB 해당 계정에서 캐릭터 생성
+    # 캐릭터 생성 완료 후 해당 캐릭터의 DETAIL 페이지로 리다이렉트
+
+    if personal_info_cache['acc_id'] is None:
+        return redirect('/login')
+    
+    # if personal_info_cache['character_list'][3] is not None: -> 수정 필요함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    #     return redirect('/pick')
+
+    return ""
+
+
+
+
+# 캐릭터 삭제
+@app.route('/delete/<int:character_id>')
+def delete_request(character_id):
+    # 캐릭터 리스트는 0부터 시작, character_id는 1부터 시작
+    # 따라서 리스트에서 받아오려면 1씩 빼주어야 한다.
+    # 만들다보니까 이렇게 레거시가 되었지만 그냥 수정하지 않음
+    # DB에서 삭제 완료후 (/pick)화면으로 리다이렉트
+    # 삭제 완료시엔 personel_info_cache의 캐릭터 리스트에서도 제거해야함!
+    if personal_info_cache['acc_id'] is None:
+        return redirect('/login')
+
+    query = (f"DELETE FROM USERCHARACTER WHERE CHARACTER_ID='{character_id-1}';")
+    cursor.execute(query)
+    cnx.commit()
+    personal_info_cache['character_list'][character_id-1] = None;
+
+    return redirect('/pick')
 
 
 if __name__ == "__main__":

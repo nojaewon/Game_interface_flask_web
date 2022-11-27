@@ -6,13 +6,15 @@
 
 {% block contents %}
 <div class="login">
-	<h1>Login</h1>
-    <form method="POST" action="/login">
+	<h1>Sign Up</h1>
+    <form method="POST" action="/signup">
+        <input type="text" name="NAME" placeholder="Name" required="required" />
     	<input type="text" name="ID" placeholder="Username" required="required" />
+        <input type="text" name="EMAIL" placeholder="Email" required="required" />
         <input type="password" name="PASSWORD" placeholder="Password" required="required" />
-        <button type="submit" class="btn btn-primary btn-block btn-large">Let me in.</button>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Sign up now.</button>
     </form>
-    <a href="/signup">sign up</a>
+    <a href="/login">Log in</a>
 </div>
 {% endblock %}
 

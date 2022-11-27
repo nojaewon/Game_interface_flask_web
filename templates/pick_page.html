@@ -7,10 +7,14 @@
 
 {% block contents %}
 <div class="pick-character-container">
+    <h2>{{ acc_name }}님 환영합니다</h2>
     {% for character_info in character_info_list %}
        
         <div class="character-container">
         {% if character_info != None %}
+            <a class="character-delete" href="#" data-index="{{loop.index}}">DELETE</a>
+            <a class="character-detail" href="/pick/{{ loop.index }}">SHOW</a>
+            
             <p class="character">
                 <img class="character_img" src= "../static/images/character{{ loop.index }}.png" alt="character-img">
             </p>
@@ -18,11 +22,17 @@
             <p class="character-text character_job">Job: {{character_info['job']}}</p>
             <p class="character-text character_lv">LV: {{character_info['level']}}</p>
         {% else %}
-            
-        
+            <img src="../static/images/character-add.png" alt="character-add" class="character-add">
         {% endif %}
         </div>
     {% endfor %}
+</div>
+
+<div class="query-delete">
+    <h4 class="query-delete-title">정말로 이 캐릭터를 삭제하시겠습니까?</h4>
+    <a class="query-delete-response query-delete-yes" href="">네</a>
+    <a class="query-delete-response query-delete-no" href="#">아니오</a>
+    
 </div>
 {% endblock %}
 
