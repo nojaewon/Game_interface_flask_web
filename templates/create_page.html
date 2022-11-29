@@ -1,0 +1,24 @@
+{% extends "base_page.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="../static/styles/create_style.css">
+{% endblock %}
+
+{% block contents %}
+<div class="create-character-container">
+<form action="/create-character" method="post">
+    <p class="img-container"><img class="character-create-image" src="../static/images/character4.png" alt="character-img"></p>
+    <input type="text" name="NAME" id="ch_input_name" placeholder="Name">
+    <select name="JOB" id="ch_input_job">
+        <option value="ARCHOR">ARCHOR</option>
+        <option value="ARCHOR">ARCHOR</option>
+        <option value="ARCHOR">ARCHOR</option>
+        <option value="ARCHOR">ARCHOR</option>
+        <option value="ARCHOR">ARCHOR</option>
+    </select>
+</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

@@ -6,6 +6,7 @@
 
 
 {% block contents %}
+<a href="/logout" class="logout_btn">Log out</a>
 <div class="pick-character-container">
     <h2>{{ acc_name }}님 환영합니다</h2>
     {% for character_info in character_info_list %}
@@ -23,6 +24,25 @@
             <p class="character-text character_lv">LV: {{character_info['level']}}</p>
         {% else %}
             <img src="../static/images/character-add.png" alt="character-add" class="character-add">
+            
+            <form class="create-form" action="/create-character" method="post">
+                <p class="character">
+                    <img class="character_img" src="../static/images/character{{loop.index}}.png" alt="character-img">
+                </p>
+                <p class="character-text character_name">
+                    <input type="text" name="NAME" class="ch_input_name" placeholder="Name">
+                </p>
+                <p class="character-text character_job">
+                    <select name="JOB" class="ch_input_job">
+                        {% for job in job_list %}
+                        <option value="{{job}}">{{job}}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+
+                <a href="#" class="ch_input_cancel">CANCEL</a>
+                <input class="ch_input_btn" type="submit" value="ADD">
+            </form>
         {% endif %}
         </div>
     {% endfor %}

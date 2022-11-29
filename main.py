@@ -22,9 +22,13 @@ def main_page():
 # 로그인 화면
 @app.route('/login', methods=['POST', 'GET'])
 def login_page():
+    # 로그인되어 있으면 pick 창으로 리다이렉트
     # GET 방식일 때 로그인 화면 보여주기
     # 로그인 정보가 맞지 안으면 로그인 화면으로 다시 렌더
     # 로그인 정보가 맞으면 /pick 창으로 리다이렉트
+
+    if personal_info_cache['acc_id'] is not None:
+        return redirect('/pick')
 
     if request.method == 'POST':
         login_id = request.form['ID']
@@ -44,7 +48,7 @@ def login_page():
 
         if personal_info_cache['acc_id'] is None:
             print("NOT logged!")
-            return render_template("login_page.html")    
+            return render_template("login_page.html")
         
         print("logged!")
         return redirect('/pick')
@@ -105,8 +109,14 @@ def pick_page():
         }
 
         personal_info_cache['character_list'][idx] = character
+    
+    query = ("select * from JOBLIST;")
+    cursor.execute(query)
+    job_list = []
+    for data in cursor:
+        job_list.append(data[0])
 
-    return render_template("pick_page.html", character_info_list=personal_info_cache['character_list'], acc_name=personal_info_cache['acc_id'])
+    return render_template("pick_page.html", character_info_list=personal_info_cache['character_list'], acc_name=personal_info_cache['acc_id'], job_list = job_list)
 
 
 # 캐릭터 세부 정보 조작
@@ -123,6 +133,7 @@ def detail_page(character_id):
     # 가져와야할 정보 1. 캐릭터가 가지고 있는 아이템과 아이템 TYPE from INVENTORY, ITEM
     # 가져와야할 정보 2. 캐릭터의 스탯 from STAT
     # 가져와야할 정보 3. 캐릭터의 스킬셋 from CHACRACTERSKILL
+    # 가져와야할 정보 4. 캐릭터 생성시 직업 Select 폼을 위한 직업 리스트
 
     if personal_info_cache['acc_id'] is None:
         return redirect('/login')
@@ -203,18 +214,34 @@ def detail_page(character_id):
 @app.route('/create-character', methods=['POST', 'GET'])
 def create_page():
     # 로그인이 안되어 있으면 로그인창으로 리다이렉트
-    # GET 요청일 때 해당 캐릭터 개수가 4개 이상이면 캐릭터 생성 x, pick 창으로 리다이렉트
-    # GET으로 받을 시 캐릭터 생성을 위한 입력폼으로 이동
     # POST method이면 request 입력폼의 정보들로 DB 해당 계정에서 캐릭터 생성
     # 캐릭터 생성 완료 후 해당 캐릭터의 DETAIL 페이지로 리다이렉트
+
+    def isPossible_create_character():
+        for character in personal_info_cache['character_list']:
+            if character is None:
+                return True
+        return False
 
     if personal_info_cache['acc_id'] is None:
         return redirect('/login')
     
-    # if personal_info_cache['character_list'][3] is not None: -> 수정 필요함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #     return redirect('/pick')
+    if isPossible_create_character():
+        if request.method == 'POST':
+            ch_name = request.form['NAME']
+            ch_job = request.form['JOB']
 
-    return ""
+            query = (f'INSERT INTO USERCHARACTER VALUES("{ch_name}","{ch_job}","{personal_info_cache["acc_id"]}");')
+            cursor.execute(query)
+
+            query = (f'INSERT INTO STAT(CHARACTER_ID,_LEVEL) VALUES("{ch_name}",1);')
+            cursor.execute(query)
+
+            query = (f'INSERT INTO characterskill(CHARACTER_ID,SKILL) SELECT "{ch_name}",SKILL FROM SKILLLIST WHERE JOB="{ch_job}"')
+            cursor.execute(query)
+            cnx.commit()
+    
+    return redirect('/pick')
 
 
 
@@ -230,12 +257,21 @@ def delete_request(character_id):
     if personal_info_cache['acc_id'] is None:
         return redirect('/login')
 
-    query = (f"DELETE FROM USERCHARACTER WHERE CHARACTER_ID='{character_id-1}';")
+    query = (f"DELETE FROM USERCHARACTER WHERE CHARACTER_ID='{personal_info_cache['character_list'][character_id-1]['name']}';")
     cursor.execute(query)
     cnx.commit()
-    personal_info_cache['character_list'][character_id-1] = None;
+    personal_info_cache['character_list'][character_id-1] = None
 
     return redirect('/pick')
+
+@app.route('/logout')
+def logout_request():
+    if personal_info_cache['acc_id'] is None:
+        return redirect('/login')
+    
+    personal_info_cache['acc_id'] = None
+
+    return redirect('/login')
 
 
 if __name__ == "__main__":

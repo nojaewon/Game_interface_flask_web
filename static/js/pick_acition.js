@@ -4,13 +4,24 @@ const NO_delete = document.body.querySelector(".query-delete-no");
 const YES_delete = document.body.querySelector(".query-delete-yes");
 
 const createQueryContainer = document.body.querySelectorAll(".character-add");
+const createForm = document.body.querySelectorAll(".create-form");
+const createFormCancel = document.body.querySelectorAll(".ch_input_cancel")
 
 let cache_delete_index = 0;
 
 
-createQueryContainer.forEach((el)=>{
+createQueryContainer.forEach((el, index)=>{
     el.addEventListener("click", ()=>{
-        window.location = "/create-character";
+        el.style.display = 'none';
+        createForm[index].style.display = "block";
+    })
+})
+
+createFormCancel.forEach((el, index)=>{
+    el.addEventListener("click", (e)=>{
+        e.preventDefault();
+        createQueryContainer[index].style.display = 'block';
+        createForm[index].style.display = 'none';
     })
 })
 
